@@ -2,19 +2,19 @@
 filebeat.modules:
 
 #------------------------------- System Module -------------------------------
-- module: system
+# - module: system
 #------------------------------- Auditd Module -------------------------------
-- module: auditd
+# - module: auditd
 #------------------------------ logstash Module ------------------------------
-- module: logstash
+# - module: logstash
 #------------------------------- mongodb Module ------------------------------
-- module: mongodb
+# - module: mongodb
 #-------------------------------- Nginx Module -------------------------------
-- module: nginx
+# - module: nginx
 #-------------------------------- osquery Module -----------------------------
-- module: osquery
+# - module: osquery
 #-------------------------------- Redis Module -------------------------------
-- module: redis
+# - module: redis
 
 
 #=========================== Filebeat inputs =============================
@@ -22,9 +22,9 @@ filebeat.modules:
 # List of inputs to fetch data.
 filebeat.inputs:
 - type: log
-  enabled: true
+  enabled: false
   paths:
-    - /var/log/kibana/kibana.log
+    - /etc/*.log
   json.message_key: log
 #  fields:
 #    type: kibana
@@ -49,7 +49,7 @@ processors:
 
 #-------------------------- Elasticsearch output -------------------------------
 output.elasticsearch:
-  enabled: true
+  enabled: false
   hosts: ["localhost:9200"]
 
 #----------------------------- Logstash output ---------------------------------
@@ -62,7 +62,7 @@ output.logstash:
 setup:
   kibana.host: "localhost:5601"
   dashboards:
-    enabled: true
+    enabled: false
     always_kibana: true #Only talk to Kibana, which is important for the retry
     retry.enabled: true #Retry in case Kibana is not up yet
 

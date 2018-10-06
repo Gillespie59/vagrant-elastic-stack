@@ -156,7 +156,33 @@
   - name: Make sure Elasticsearch autostarts, but is stopped until it is properly configured
     service: name=elasticsearch enabled=yes state=stopped
 
+  - name: Get APM
+    get_url: 
+      url={{ elastic_download }}/downloads/apm-server/apm-server-{{ elastic_version }}-amd64.deb
+      dest=/opt/apm.deb
 
+  - name: Install APM
+    apt: deb=/opt/apm.deb
+
+  - name: Make sure apm autostarts, but is stopped until it is properly configured
+    service: name=apm-server enabled=yes state=stopped
+
+  - name: Install the gpg key for nodejs LTS
+    apt_key:
+      url: "https://deb.nodesource.com/gpgkey/nodesource.gpg.key"
+      state: present
+
+  - name: Install the nodejs LTS repos
+    apt_repository:
+      repo: "deb https://deb.nodesource.com/node_10.x {{ ansible_distribution_release }} main"
+      state: present
+      update_cache: yes
+
+  - name: Install the nodejs
+    apt:
+      name: nodejs
+      state: present
+      
   - name: Get Logstash
     get_url:
       url={{ elastic_download }}/downloads/logstash/logstash-{{ elastic_version }}.deb
@@ -174,30 +200,16 @@
       url={{ elastic_download }}/downloads/beats/{{ item }}/{{ item }}-{{ elastic_version }}-{{ platform }}.deb
       dest=/opt/{{ item }}.deb
     loop:
-      - auditbeat
       - filebeat
-      - heartbeat
       - metricbeat
       - packetbeat
 
   - name: Install the Beats
     apt: deb=/opt/{{ item }}.deb
     loop:
-      - auditbeat
       - filebeat
-      - heartbeat
       - metricbeat
       - packetbeat
-
-  - name: Make sure the Beats autostart, but are stopped until they are properly configured
-    service: name={{ item }} enabled=yes state=stopped
-    loop:
-      - auditbeat
-      - filebeat
-      - heartbeat-elastic
-      - metricbeat
-      - packetbeat
-
 
   - name: Get Kibana
     get_url:

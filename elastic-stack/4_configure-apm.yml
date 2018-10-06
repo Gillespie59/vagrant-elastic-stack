@@ -1,0 +1,19 @@
+---
+
+- hosts: localhost
+  become: true
+
+
+  tasks:
+
+  - name: Change the apm configuration
+    template: src=templates/apm_server.yml dest=/etc/apm-server/apm-server.yml
+  
+  - name: copy NodeJS project
+    copy: 
+      src: templates/nodejs-api 
+      dest: /etc
+
+  - name: Restart APM
+    service: name=apm-server state=restarted
+

@@ -13,17 +13,10 @@ packetbeat.flows:
 #========================== Transaction protocols =============================
 
 packetbeat.protocols:
-- type: icmp
-- type: dns
-  ports: [53]
-  include_authorities: true
-  include_additionals: true
 - type: http
-  ports: [80, 5601]
-- type: redis
-  ports: [6379]
+  ports: []
 - type: mongodb
-  ports: [27017]
+  ports: []
 
 #================================ Processors ===================================
 
@@ -40,7 +33,7 @@ output.elasticsearch:
 
 #------------------------------- Redis output ----------------------------------
 output.redis:
-  enabled: true
+  enabled: false
   hosts: ["localhost:6379"]
   datatype: "list"
   key: "packetbeat"
@@ -51,12 +44,12 @@ output.redis:
 setup:
   kibana.host: "localhost:5601"
   dashboards:
-    enabled: true
+    enabled: false
     always_kibana: true #Only talk to Kibana, which is important for the retry
     retry.enabled: true #Retry in case Kibana is not up yet
 
 #============================== Xpack Monitoring =====================================
 
 xpack.monitoring:
-  enabled: true
+  enabled: false
   elasticsearch.hosts: ["localhost:9200"] #Required if you connect through Logstash
